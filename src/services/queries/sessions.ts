@@ -13,12 +13,19 @@ export const getSession = async (id: string) => {
 };
 
 export const saveSession = async (session: Session) => {
-	
+	return client.hSet(sessionsKey(session.id), serialize(session));
 };
 
 const deserialize = (id: string, session: { [key: string]: string }) => {
 	return {
 		id,
+		userId: session.userId,
+		username: session.username
+	};
+};
+
+const serialize = (session: Session) => {
+	return {
 		userId: session.userId,
 		username: session.username
 	};
