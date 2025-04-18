@@ -1,7 +1,7 @@
 import type { CreateUserAttrs } from '$services/types';
 import { genId } from '$services/utils';
 import { client } from '$services/redis';
-import { usersKey } from '$services/keys';
+import { usersKey, usernameUniqueKey } from '$services/keys';
 
 export const getUserByUsername = async (username: string) => {};
 
@@ -13,7 +13,17 @@ export const getUserById = async (id: string) => {
 
 export const createUser = async (attrs: CreateUserAttrs) => {
 	const id = genId();
+
+	// See if the  username is already in the set of usernames
+	const exists = await client.sIsMember(usernameUniqueKey(), attrs.username);
+	// If so, throw and error
+	if (exists) {
+		throw new Error('Username is taken');
+	}
+	// Otherwise, continue
+
 	await client.hSet(usersKey(id), serialize(attrs));
+	await client.sAdd(usernameUniqueKey(), attrs.username);
 
 	return id;
 };
