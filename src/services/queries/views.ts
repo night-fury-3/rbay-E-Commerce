@@ -1,5 +1,5 @@
 import { client } from '$services/redis';
-import { itemsByViewsKey, itemsKey } from '$services/keys';
+import { itemsKey, itemsByViewsKey } from '$services/keys';
 
 export const incrementView = async (itemId: string, userId: string) => {
 	return Promise.all([

@@ -26,18 +26,19 @@ export const getItems = async (ids: string[]) => {
 		if (Object.keys(result).length === 0) {
 			return null;
 		}
+
 		return deserialize(ids[i], result);
 	});
 };
 
-export const createItem = async (attrs: CreateItemAttrs, userId: string) => {
+export const createItem = async (attrs: CreateItemAttrs) => {
 	const id = genId();
 
 	const serialized = serialize(attrs);
 
 	await Promise.all([
-		await client.hSet(itemsKey(id), serialized),
-		await client.zAdd(itemsByViewsKey(), {
+		client.hSet(itemsKey(id), serialized),
+		client.zAdd(itemsByViewsKey(), {
 			value: id,
 			score: 0
 		}),

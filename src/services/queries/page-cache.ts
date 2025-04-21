@@ -15,6 +15,6 @@ export const setCachedPage = (route: string, page: string) => {
 	if (cacheRoutes.includes(route)) {
 		return client.set(pageCacheKey(route), page, {
 			EX: 2
-		}); // expire after 2 seconds
+		});
 	}
 };
